@@ -16,6 +16,7 @@ class Factory :
         self.name : str = name
         self.machines : list[Machine] = []
         self.inventory : dict = inventory if inventory is not None else {}
+        self.power_consumption : dict = {}
 
     # Getters and setters
 
@@ -48,25 +49,38 @@ class Factory :
     def add_machine(self, machine : Machine) -> None :
         self.get_machines().append(machine)
 
-    def add_item(self, item : Item, quantity : float = 0) -> None :
-        if item.is_infinite() :
+    def add_node(self, item : Item) -> None :
             self.get_inventory()[item] = float('inf')
-        else :
-            self.get_inventory()[item] = self.get_inventory().get(item, 0) + quantity
+
+    def add_item(self, item : Item, quantity) -> None :
+        self.get_inventory()[item] = self.get_inventory().get(item, 0) + quantity
 
     def show_inventory(self) -> None :
         print("Inventory :")
         for item, quantity in self.get_inventory().items() :
             print(f"{item.get_name()} : {quantity}")
+        print()
+
+    def show_power_consumption(self) -> None :
+        print("Power consumption :")
+        for machine_type, power in self.power_consumption.items() :
+            print(f"{machine_type} : {power} MW")
 
     def simulate(self, minutes : int = duration_minutes) -> None :
         for machine in self.get_machines() :
             result : dict = machine.simulate(self.get_inventory(), minutes)
-            print(f"Machine {machine.get_name()}")
+            
+            # Consume inputs
             for item, quantity in result["total_inputs"].items() :
                 self.get_inventory()[item] -= quantity
-                print(f"\t{item.get_name()} : {quantity}")
+            
+            # Produce outputs
             for item, quantity in result["total_outputs"].items() :
-                print(f"\t{item.get_name()} : {quantity}")
                 self.add_item(item, quantity)
             
+            # Consume power
+            for machine_type, power in result["power_consumption"].items() :
+                self.power_consumption[machine_type] = self.power_consumption.get(machine_type, 0) + power
+
+            print(f"Machine: {machine.get_name()}, elapsed_craft_time = {machine.get_elapsed_craft_time()}, craft_time = {machine.get_recipe().get_craft_time() / machine.get_overclock()}, craft_nb = {result['craft_nb']}, power_consumption = {result['power_consumption']}")
+            self.show_inventory()
