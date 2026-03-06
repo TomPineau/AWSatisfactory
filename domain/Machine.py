@@ -68,30 +68,32 @@ class Machine:
     def simulate(self, inventory : dict, minutes : int) -> None :
         recipe : Recipe = self.get_recipe()
         if recipe is None :
+            print(f"Machine {self.get_name()} has no recipe assigned.")
             return
         
         recipe_inputs : dict = recipe.get_inputs()
         recipe_outputs : dict = recipe.get_outputs()
-        craft_nb : int = int((minutes * 60 - self.get_craft_remaining_time()) / (self.get_recipe().get_craft_time() / self.get_overclock()))
+
+        total_time : int = minutes * 60 + self.get_craft_remaining_time()
+        craft_speed : float = recipe.get_craft_time() / self.get_overclock()
+        max_craft_nb : int = int(total_time / craft_speed)
+        max_craft_nb_from_inputs : int = min([inventory.get(item, 0) // quantity if not item.is_infinite() else max_craft_nb for item, quantity in recipe_inputs.items()])
+
+        craft_nb : int = min(max_craft_nb, max_craft_nb_from_inputs)
+        total_craft_time : int = craft_nb * craft_speed
+        new_craft_remaining_time : int = minutes * 60 + self.get_craft_remaining_time() - total_craft_time
+        self.set_craft_remaining_time(new_craft_remaining_time)
+
+        print(f"Machine {self.get_name()}: total_time = {total_time}, craft_remaining_time = {self.get_craft_remaining_time()}, craft_speed = {craft_speed}, max_craft_nb = {max_craft_nb}, max_craft_nb_from_inputs = {max_craft_nb_from_inputs}, total_craft_time = {total_craft_time}, craft_nb = {craft_nb}")
+
         total_inputs : dict = {item: quantity * craft_nb for item, quantity in recipe_inputs.items()}
         total_outputs : dict = {item: quantity * craft_nb for item, quantity in recipe_outputs.items()}
 
-        
-        # if self.get_craft_remaining_time() > 0 :
-        #     time_to_simulate : int = min(self.get_craft_remaining_time(), minutes)
-        #     self.set_craft_remaining_time(self.get_craft_remaining_time() - time_to_simulate)
-        #     minutes -= time_to_simulate
-        #     if self.get_craft_remaining_time() == 0 :
-        #         for item, quantity in self.get_recipe().get_outputs().items() :
-        #             inventory[item] = inventory.get(item, 0) + quantity
-        # else :
-        #     can_craft : bool = True
-        #     for item, quantity in self.get_recipe().get_inputs().items() :
-        #         if inventory.get(item, 0) < quantity :
-        #             can_craft = False
-        #             break
-        #     if can_craft :
-        #         for item, quantity in self.get_recipe().get_inputs().items() :
-        #             inventory[item] = inventory.get(item, 0) - quantity
-        #         self.set_craft_remaining_time(int(self.get_recipe().get_craft_time() / self.get_overclock()))
-        #         self.simulate(inventory, minutes)
+        power_consumption : float = self.get_base_power() * total_craft_time * self.get_overclock() ** 1.6
+        print(f"power_consumption = {power_consumption}")
+
+        return {
+            "craft_nb": craft_nb,
+            "total_inputs": total_inputs,
+            "total_outputs": total_outputs,
+            "power_consumption": power_consumption}

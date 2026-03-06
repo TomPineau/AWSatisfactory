@@ -48,7 +48,25 @@ class Factory :
     def add_machine(self, machine : Machine) -> None :
         self.get_machines().append(machine)
 
+    def add_item(self, item : Item, quantity : float = 0) -> None :
+        if item.is_infinite() :
+            self.get_inventory()[item] = float('inf')
+        else :
+            self.get_inventory()[item] = self.get_inventory().get(item, 0) + quantity
+
+    def show_inventory(self) -> None :
+        print("Inventory :")
+        for item, quantity in self.get_inventory().items() :
+            print(f"{item.get_name()} : {quantity}")
+
     def simulate(self, minutes : int = duration_minutes) -> None :
         for machine in self.get_machines() :
-            result = machine.simulate(self.get_inventory(), minutes)
+            result : dict = machine.simulate(self.get_inventory(), minutes)
+            print(f"Machine {machine.get_name()}")
+            for item, quantity in result["total_inputs"].items() :
+                self.get_inventory()[item] -= quantity
+                print(f"\t{item.get_name()} : {quantity}")
+            for item, quantity in result["total_outputs"].items() :
+                print(f"\t{item.get_name()} : {quantity}")
+                self.add_item(item, quantity)
             

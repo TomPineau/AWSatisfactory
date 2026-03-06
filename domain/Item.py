@@ -7,7 +7,7 @@ class Item :
                  is_infinite : bool = False
                  ) -> None :
         self.name : str = name
-        self.is_infinite : bool = is_infinite
+        self._is_infinite : bool = is_infinite
 
     # Getters and setters
 
@@ -18,12 +18,12 @@ class Item :
         self.name : str = value
 
     def is_infinite(self) -> bool:
-        return self.is_infinite
+        return self._is_infinite
 
     def set_is_infinite(self, value) -> None:
-        self.is_infinite : bool = value
+        self._is_infinite : bool = value
 
     # Methods
 
     def print(self):
-        print(f"Item : name = {self.name}, is_infinite = {self.is_infinite}")
+        print(f"Item : name = {self.get_name()}, is_infinite = {self.is_infinite()}")
