@@ -1,27 +1,24 @@
-class Item :
+class Item:
 
     # Constructor
 
-    def __init__(self,
-                 name : str,
-                 is_infinite : bool = False
-                 ) -> None :
-        self.name : str = name
-        self._is_infinite : bool = is_infinite
+    def __init__(self, name: str, is_infinite: bool = False) -> None:
+        self.name: str = name
+        self._is_infinite: bool = is_infinite
 
     # Getters and setters
 
-    def get_name(self) -> str :
+    def get_name(self) -> str:
         return self.name
 
-    def set_name(self, value) -> None :
-        self.name : str = value
+    def set_name(self, value) -> None:
+        self.name: str = value
 
     def is_infinite(self) -> bool:
         return self._is_infinite
 
     def set_is_infinite(self, value) -> None:
-        self._is_infinite : bool = value
+        self._is_infinite: bool = value
 
     # Methods
 

@@ -1,6 +1,6 @@
-from domain.Machine import Machine
-from domain.enum.MachineType import MachineType
-from config.recipes import *
+from awsatisfactory.domain.Machine import Machine
+from awsatisfactory.domain.enum.MachineType import MachineType
+from awsatisfactory.config.recipes import *
 
 # Smart Plating machines
 

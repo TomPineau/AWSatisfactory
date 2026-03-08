@@ -1,4 +1,4 @@
-from domain.Item import Item
+from awsatisfactory.domain.Item import Item
 
 # Nodes (Items that can be mined infinitely)
 
@@ -6,11 +6,7 @@ iron_node: Item = Item("Iron Node", True)
 copper_node: Item = Item("Copper Node", True)
 coal_node: Item = Item("Coal Node", True)
 
-infinite_nodes : list[Item] = [
-    iron_node,
-    copper_node,
-    coal_node
-]
+infinite_nodes: list[Item] = [iron_node, copper_node, coal_node]
 
 # Iron based items
 
@@ -35,7 +31,7 @@ steel_ingot: Item = Item("Steel Ingot")
 steel_beam: Item = Item("Steel Beam")
 steel_pipe: Item = Item("Steel Pipe")
 
-#Advanced items
+# Advanced items
 
 modular_frame: Item = Item("Modular Frame")
 rotor: Item = Item("Rotor")
