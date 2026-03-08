@@ -1,4 +1,4 @@
-from domain.Item import Item
+from domain.enum.MachineType import MachineType
 
 class Recipe :
 
@@ -6,14 +6,16 @@ class Recipe :
 
     def __init__(self,
                  name : str,
+                 machine_type : MachineType,
                  inputs : dict,
                  outputs : dict,
-                 craft_time : int
+                 craft_time : float
                  ) -> None :
         self.name : str = name
+        self.machine_type : MachineType = machine_type
         self.inputs : dict = inputs
         self.outputs : dict = outputs
-        self.craft_time : int = craft_time
+        self.craft_time : float = craft_time
 
     # Getters and setters
 
@@ -22,6 +24,12 @@ class Recipe :
     
     def set_name(self, value) -> None :
         self.name : str = value
+
+    def get_machine_type(self) -> MachineType :
+        return self.machine_type
+    
+    def set_machine_type(self, value) -> None :
+        self.machine_type : MachineType = value
 
     def get_inputs(self) -> dict :
         return self.inputs
@@ -35,11 +43,11 @@ class Recipe :
     def set_outputs(self, value) -> None :
         self.outputs : dict = value
 
-    def get_craft_time(self) -> int :
+    def get_craft_time(self) -> float :
         return self.craft_time
     
     def set_craft_time(self, value) -> None :
-        self.craft_time : int = value
+        self.craft_time : float = value
     
     # Methods
 
