@@ -1,3 +1,7 @@
+import gzip
+import json
+
+
 class EnergyChartsTransformer :
 
     # Methods
@@ -17,4 +21,9 @@ class EnergyChartsTransformer :
                 }
             )
 
-        return records
+        json_lines : str = "\n".join(json.dumps(r) for r in records)
+
+        # compression gzip
+        compressed_data : bytes = gzip.compress(json_lines.encode("utf-8"))
+
+        return compressed_data
