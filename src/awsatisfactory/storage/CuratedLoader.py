@@ -5,9 +5,14 @@ from pandas import DataFrame
 
 class CuratedLoader:
 
+    # Constants
+
+    BUCKET : str = "satisfactory-energy-data-lake"
+    FOLDER : str = "curated"
+
     # Constructor
 
-    def __init__(self, bucket : str) -> None:
+    def __init__(self, bucket : str = BUCKET) -> None:
         self.bucket : str = bucket
         self.s3 : boto3.client = boto3.client("s3")
 

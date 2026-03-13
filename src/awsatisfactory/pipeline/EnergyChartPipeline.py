@@ -1,7 +1,7 @@
 from awsatisfactory.data_sources.EnergyChartsAPI import EnergyChartsAPI
 from awsatisfactory.storage.RawLoader import RawLoader
 from awsatisfactory.storage.CuratedLoader import CuratedLoader
-from awsatisfactory.transformations.EnergyPriceTransformer import EnergyPriceTransformer
+from awsatisfactory.transformations.EnergyTimeTransformer import EnergyTimeTransformer
 
 
 class EnergyChartPipeline:
@@ -11,7 +11,7 @@ class EnergyChartPipeline:
         api = EnergyChartsAPI()
 
         raw_loader = RawLoader("energy-data-lake")
-        transformer = EnergyPriceTransformer()
+        transformer = EnergyTimeTransformer()
         curated_loader = CuratedLoader("energy-data-lake")
 
         data = api.fetch()

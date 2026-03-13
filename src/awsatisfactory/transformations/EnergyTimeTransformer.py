@@ -1,7 +1,7 @@
 import pandas as pd
 from pandas import DataFrame
 
-class EnergyPriceTransformer :
+class EnergyTimeTransformer :
 
     # Methods
 
@@ -12,6 +12,6 @@ class EnergyPriceTransformer :
             "price": data["price"]
         })
 
-        df["datetime"] = pd.to_datetime(df["timestamp"], unit="s")
+        df["datetime"] = pd.to_datetime(df["timestamp"], unit = "s")
 
         return df

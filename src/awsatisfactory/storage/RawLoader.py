@@ -1,13 +1,16 @@
-import json
-import gzip
 import boto3
 from datetime import datetime
 
 class RawLoader:
 
+    # Constants
+
+    BUCKET : str = "satisfactory-energy-data-lake"
+    FOLDER : str = "raw"
+
     # Constructor
 
-    def __init__(self, bucket : str) -> None:
+    def __init__(self, bucket : str = BUCKET) -> None:
         self.bucket : str = bucket
         self.s3 : boto3.client = boto3.client("s3")
 
@@ -32,7 +35,9 @@ class RawLoader:
         now : datetime = datetime.now()
 
         key = (
-            f"raw/{destination}/{dataset}/"
+            f"{self.FOLDER}/"
+            f"{destination}/"
+            f"{dataset}/"
             f"year={now.year}/"
             f"month={now.month:02}/"
             f"day={now.day:02}/"
