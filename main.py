@@ -20,9 +20,11 @@ def main() -> None:
     raw_loader = RawLoader("satisfactory-energy-data-lake")
 
     data = api.fetch_data()
+    print(data)
     records = transformer.to_records(data)
+    print(records)
 
-    raw_loader.upload(records, "energy_charts", "price")
+    # raw_loader.upload(records, "energy_charts", "price")
 
     # raw_loader.upload(data, "energy_charts", "price")
 

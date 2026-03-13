@@ -1,4 +1,6 @@
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 # Constants
 
@@ -6,14 +8,34 @@ RAW_URL: str = "https://api.energy-charts.info"
 DATASET: str = "price"
 BIDDING_ZONE: str = "FR"
 
-# Constructor
-
 
 class EnergyChartsAPI:
+
+    # Constructor
 
     def __init__(self, dataset: str, bidding_zone: str) -> None:
         self.dataset: str = dataset
         self.bidding_zone: str = bidding_zone
+        self.session: requests.Session = self._create_session()
+
+    # Private methods
+
+    def _create_session(self) -> requests.Session:
+
+        retry_strategy : Retry = Retry(
+            total = 5,
+            backoff_factor = 2,
+            status_forcelist = [429, 500, 502, 503, 504],
+            allowed_methods = ["GET"],
+        )
+
+        adapter : HTTPAdapter = HTTPAdapter(max_retries = retry_strategy)
+
+        session : requests.Session = requests.Session()
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
+
+        return session
 
     # Getters and setters
 
@@ -29,6 +51,12 @@ class EnergyChartsAPI:
     def set_bidding_zone(self, value) -> None:
         self.bidding_zone: str = value
 
+    def get_session(self) -> requests.Session:
+        return self.session
+    
+    def set_session(self, value) -> None:
+        self.session: requests.Session = value
+
     # Methods
 
     @property
@@ -36,13 +64,12 @@ class EnergyChartsAPI:
         return f"{RAW_URL}/{self.dataset}?bzn={self.bidding_zone}"
 
     def fetch_data(self) -> dict:
-        response = requests.get(self.url)
-        response_status_code: int = response.status_code
 
-        if response_status_code == 200:
+        try :
+            response : requests.Response = self.get_session().get(self.url, timeout = 10)
+            response.raise_for_status()
             data: dict = response.json()
             return data
-        else:
-            raise Exception(
-                f"Failed to fetch data from {self.url} with status code {response_status_code}"
-            )
+
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"An error occurred while fetching data from {self.url}: {e}")

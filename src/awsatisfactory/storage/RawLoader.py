@@ -27,7 +27,7 @@ class RawLoader:
 
     # Methods
 
-    def upload(self, records: list[dict], destination: str, dataset: str) -> str:
+    def upload(self, data: object, destination: str, dataset: str) -> str:
 
         now : datetime = datetime.now()
 
@@ -39,16 +39,10 @@ class RawLoader:
             f"data_{now.strftime('%Y%m%dT%H%M%S')}.json.gz"
         )
 
-        json_lines = "\n".join(json.dumps(r) for r in records)
-
-        # compression gzip
-        compressed_data = gzip.compress(json_lines.encode("utf-8"))
-
-
         self.s3.put_object(
             Bucket=self.bucket,
             Key=key,
-            Body=compressed_data,
+            Body=data,
             ContentType="application/json",
             ContentEncoding="gzip"
         )
