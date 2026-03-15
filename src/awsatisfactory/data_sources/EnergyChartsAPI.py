@@ -2,18 +2,14 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-# Constants
-
-RAW_URL: str = "https://api.energy-charts.info"
-DATASET: str = "price"
-BIDDING_ZONE: str = "FR"
+from awsatisfactory.config.config import RAW_URL, DATASET, BIDDING_ZONE
 
 
 class EnergyChartsAPI:
 
     # Constructor
 
-    def __init__(self, dataset: str, bidding_zone: str) -> None:
+    def __init__(self, dataset: str = DATASET, bidding_zone: str = BIDDING_ZONE) -> None:
         self.dataset: str = dataset
         self.bidding_zone: str = bidding_zone
         self.session: requests.Session = self._create_session()

@@ -1,14 +1,10 @@
 from awsatisfactory.domain.Line import Line
 from awsatisfactory.domain.Item import Item
-
 from awsatisfactory.config.items import infinite_nodes
+from awsatisfactory.config.config import DURATION
 
 
 class Factory:
-
-    # Constants
-
-    duration_minutes: int = 1
 
     # Constructor
 
@@ -69,7 +65,7 @@ class Factory:
         for machine_type, power in self.power_consumption.items():
             print(f"{machine_type} : {power} MW")
 
-    def simulate(self, minutes: int = duration_minutes) -> None:
+    def simulate(self, minutes: int = DURATION) -> None:
         for line in self.get_lines():
             for machine in line.get_machines():
 

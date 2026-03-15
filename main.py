@@ -1,30 +1,32 @@
-from awsatisfactory.simulation.run_simulation import run_simulation
 from awsatisfactory.data_sources.EnergyChartsAPI import EnergyChartsAPI
-from awsatisfactory.data_sources.EnergyChartsAPI import DATASET, BIDDING_ZONE
-from awsatisfactory.transformations.EnergyTimeTransformer import EnergyTimeTransformer
 from awsatisfactory.transformations.EnergyChartsTransformer import EnergyChartsTransformer
-from awsatisfactory.storage.RawLoader import RawLoader
-
-from pandas import DataFrame
+from awsatisfactory.storage.S3Loader import S3Loader
+from awsatisfactory.config.config import *
+from datetime import datetime
 
 
 def main() -> None:
-    # run_simulation()
-    # energy_charts_api: EnergyChartsAPI = EnergyChartsAPI(DATASET, BIDDING_ZONE)
-    # transformer: EnergyTimeTransformer = EnergyTimeTransformer()
-    # data: dict = energy_charts_api.fetch_data()
-    # transformed_data: DataFrame = transformer.transform(data)
-    # print(transformed_data.loc[transformed_data["datetime"].idxmin()], transformed_data.loc[transformed_data["datetime"].idxmax()])
+    
     api = EnergyChartsAPI(DATASET, BIDDING_ZONE)
     transformer = EnergyChartsTransformer()
-    raw_loader = RawLoader()
+    date : datetime = datetime.now()
 
+    key = (
+            f"{BUCKET_SUB}/"
+            f"{ENERGY_CHARTS}/"
+            f"{PRICE}/"
+            f"year={date.year}/"
+            f"month={date.month:02}/"
+            f"day={date.day:02}/"
+            f"data_{date.strftime('%Y%m%dT%H%M%S')}.json.gz"
+        )
+    
     data = api.fetch_data()
+    print(data)
     records = transformer.to_records(data)
 
-    raw_loader.upload(records, "energy_charts", "price")
-
-    # raw_loader.upload(data, "energy_charts", "price")
+    s3loader : S3Loader = S3Loader(BUCKET)
+    s3loader.upload(records, key)
 
 
 if __name__ == "__main__":

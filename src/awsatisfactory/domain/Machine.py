@@ -3,24 +3,13 @@ from typing import TYPE_CHECKING
 
 from awsatisfactory.domain.enum.MachineType import MachineType
 from awsatisfactory.domain.Recipe import Recipe
+from awsatisfactory.config.config import MACHINE_POWER_BASE
 
 if TYPE_CHECKING:
     from awsatisfactory.domain.Line import Line
 
 
 class Machine:
-
-    # Constants
-
-    machine_base_power: dict = {
-        MachineType.MINER: 5,
-        MachineType.SMELTER: 4,
-        MachineType.CONSTRUCTOR: 4,
-        MachineType.FOUNDRY: 16,
-        MachineType.ASSEMBLER: 15,
-        MachineType.REFINERY: 30,
-        MachineType.MANUFACTURER: 55,
-    }
 
     # Constructor
 
@@ -40,7 +29,7 @@ class Machine:
                 f"Machine {name} of type {machine_type} cannot be assigned recipe {recipe.get_name()} of type {recipe.get_machine_type()}."
             )
         self.recipe: Recipe = recipe
-        self.base_power: float = self.machine_base_power.get(machine_type, 0)
+        self.base_power: float = MACHINE_POWER_BASE.get(machine_type, 0)
         self.overclock: float = overclock
         self.elapsed_craft_time: float = elapsed_craft_time
         self._is_running: bool = False
